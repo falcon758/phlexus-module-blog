@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Phlexus\\Modules\\Shop\\": "src/"
+            "Phlexus\\Modules\\Blog\\": "src/"
         }
     },
     "autoload-dev": {
