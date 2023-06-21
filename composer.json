@@ -1,0 +1,22 @@
+{
+    "name": "falcon758/phlexus-module-blog",
+    "license": "BSD-3-Clause",
+    "description": "Phlexus Blog Module",
+    "require": {
+        "falcon758/phlexus-module-users": "^2.1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8",
+        "phalcon/ide-stubs": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Phlexus\\Modules\\Shop\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
