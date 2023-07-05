@@ -6,7 +6,7 @@ namespace Phlexus\Modules\Blog\Models;
 use Phlexus\Models\Model;
 use Phlexus\Libraries\Media\Models\Media;
 use Phalcon\Paginator\Adapter\QueryBuilder;
-use Phalcon\Mvc\Model\Resultset\Simple;
+use Phalcon\Paginator\Repository;
 
 /**
  * Class Blog
@@ -84,9 +84,9 @@ class Blog extends Model
      *
      * @param int $page
      *
-     * @return Simple|null
+     * @return Repository|null
      */
-    public static function getBlogs(int $page = 1): ?Simple
+    public static function getBlogs(int $page = 1): ?Repository
     {
         $p_model = self::class;
 
@@ -94,13 +94,19 @@ class Blog extends Model
             ->createBuilder()
             ->columns("
                 $p_model.id AS blogID,
-                CAT.id AS categoryID,
-
+                GROUP_CONCAT(CAT.id, ',') AS categoryID,
+                GROUP_CONCAT(CAT.category, ',') AS categoryName,
+                $p_model.title AS blogTitle,
+                $p_model.description AS blogDescription,
+                $p_model.url AS blogUrl,
+                IMG.mediaName
             ")
             
             ->innerJoin(BlogCategories::class, "$p_model.id = BCAT.blogID", 'BCAT')
             ->innerJoin(BlogCategory::class, 'BCAT.categoryID = CAT.id', 'CAT')
-            ->orderBy("$p_model.id DESC");
+            ->innerJoin(Media::class, "$p_model.featuredImageID = IMG.id", 'IMG')
+            ->orderBy("$p_model.id DESC")
+            ->groupBy("$p_model.id");
 
         return (
             new QueryBuilder(

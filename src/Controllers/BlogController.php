@@ -7,11 +7,11 @@ use Phlexus\Modules\Blog\Models\Blog;
 use Phalcon\Tag;
 
 /**
- * Class IndexController
+ * Class BlogController
  *
  * @package Phlexus\Modules\Blog\Controllers
  */
-final class IndexController extends AbstractController
+final class BlogController extends AbstractController
 {
     /**
      * @return void
@@ -25,6 +25,8 @@ final class IndexController extends AbstractController
         $blogs = Blog::getBlogs((int) $this->request->get('p', null, 1));
 
         $this->view->setVar('csrfToken', $this->security->getToken());
+        $this->view->setVar('totalPages', $blogs->total_pages);
+        $this->view->setVar('page', $blogs->current);
         $this->view->setVar('blogs', $blogs);
     }
 }
