@@ -80,7 +80,7 @@ class Blog extends Model
     }
 
     /**
-     * Get translations
+     * Get blogs
      *
      * @param int $page
      *
@@ -96,15 +96,16 @@ class Blog extends Model
                 $p_model.id AS blogID,
                 GROUP_CONCAT(CAT.id, ',') AS categoryID,
                 GROUP_CONCAT(CAT.category, ',') AS categoryName,
-                $p_model.title AS blogTitle,
-                $p_model.description AS blogDescription,
-                $p_model.url AS blogUrl,
+                $p_model.title AS title,
+                $p_model.description AS description,
+                $p_model.url AS url,
+                DATE_FORMAT($p_model.createdAt, '%Y-%m-%d') AS createdAt,
+                DATE_FORMAT($p_model.modifiedAt, '%Y-%m-%d') AS modifiedAt,
                 IMG.mediaName
             ")
-            
-            ->innerJoin(BlogCategories::class, "$p_model.id = BCAT.blogID", 'BCAT')
-            ->innerJoin(BlogCategory::class, 'BCAT.categoryID = CAT.id', 'CAT')
-            ->innerJoin(Media::class, "$p_model.featuredImageID = IMG.id", 'IMG')
+            ->leftJoin(BlogCategories::class, "$p_model.id = BCAT.blogID", 'BCAT')
+            ->leftJoin(BlogCategory::class, 'BCAT.categoryID = CAT.id', 'CAT')
+            ->leftJoin(Media::class, "$p_model.featuredImageID = IMG.id", 'IMG')
             ->orderBy("$p_model.id DESC")
             ->groupBy("$p_model.id");
 
@@ -117,5 +118,23 @@ class Blog extends Model
                 ]
             )
         )->paginate();
+    }
+
+    /**
+     * Get blog
+     *
+     * @param int $blogID
+     *
+     * @return Blog|null
+     */
+    public static function getBlog(int $blogID): ?Blog
+    {
+        return self::findFirst([
+            'conditions' => 'active = :active: AND id = :ID:',
+            'bind'       => [
+                'active' => self::ENABLED,
+                'ID'     => $blogID,
+            ],
+        ]);
     }
 }

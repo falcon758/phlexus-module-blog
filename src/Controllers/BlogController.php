@@ -24,9 +24,22 @@ final class BlogController extends AbstractController
 
         $blogs = Blog::getBlogs((int) $this->request->get('p', null, 1));
 
-        $this->view->setVar('csrfToken', $this->security->getToken());
         $this->view->setVar('totalPages', $blogs->total_pages);
         $this->view->setVar('page', $blogs->current);
         $this->view->setVar('blogs', $blogs);
+    }
+
+    /**
+     * @return void
+     */
+    public function viewAction(int $blogID): void
+    {
+        $title = $this->translation->setTypePage()->_('title-blog-view');
+
+        Tag::setTitle($title);
+
+        $blog = Blog::getBlog($blogID);
+
+        $this->view->setVar('blog', $blog);
     }
 }
