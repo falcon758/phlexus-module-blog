@@ -15,4 +15,9 @@ $routes->addGet('/blog', [
     'action'     => 'index',
 ]);
 
+$routes->addGet('/blog/view/{id:[0-9]+}', [
+    'controller' => 'blog',
+    'action'     => 'view',
+]);
+
 return $routes;

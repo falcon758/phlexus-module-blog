@@ -29,16 +29,17 @@ final class BlogController extends AbstractController
         $this->view->setVar('blogs', $blogs);
     }
 
-    /**
-     * @return void
-     */
-    public function viewAction(int $blogID): void
+    public function viewAction(int $blogID)
     {
         $title = $this->translation->setTypePage()->_('title-blog-view');
 
         Tag::setTitle($title);
 
         $blog = Blog::getBlog($blogID);
+
+        if (!$blog) {
+            return $this->response->redirect('blog');
+        }
 
         $this->view->setVar('blog', $blog);
     }

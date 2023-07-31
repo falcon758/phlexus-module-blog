@@ -7,6 +7,7 @@ use Phlexus\Models\Model;
 use Phlexus\Libraries\Media\Models\Media;
 use Phalcon\Paginator\Adapter\QueryBuilder;
 use Phalcon\Paginator\Repository;
+use Phalcon\Mvc\Model\Row;
 
 /**
  * Class Blog
@@ -125,16 +126,36 @@ class Blog extends Model
      *
      * @param int $blogID
      *
-     * @return Blog|null
+     * @return Row|null
      */
-    public static function getBlog(int $blogID): ?Blog
+    public static function getBlog(int $blogID): ?Row
     {
-        return self::findFirst([
-            'conditions' => 'active = :active: AND id = :ID:',
-            'bind'       => [
-                'active' => self::ENABLED,
+        $p_model = self::class;
+
+        return self::query()
+        ->columns("
+            $p_model.id AS blogID,
+            GROUP_CONCAT(CAT.id, ',') AS categoryID,
+            GROUP_CONCAT(CAT.category, ',') AS categoryName,
+            $p_model.title AS title,
+            $p_model.description AS description,
+            $p_model.url AS url,
+            DATE_FORMAT($p_model.createdAt, '%Y-%m-%d') AS createdAt,
+            DATE_FORMAT($p_model.modifiedAt, '%Y-%m-%d') AS modifiedAt,
+            IMG.mediaName
+        ")
+        ->leftJoin(BlogCategories::class, "$p_model.id = BCAT.blogID", 'BCAT')
+        ->leftJoin(BlogCategory::class, 'BCAT.categoryID = CAT.id', 'CAT')
+        ->leftJoin(Media::class, "$p_model.featuredImageID = IMG.id", 'IMG')
+        ->where(
+            "$p_model.id = :ID: AND $p_model.active = :active:",
+            [
                 'ID'     => $blogID,
-            ],
-        ]);
+                'active' => self::ENABLED,
+            ]
+        )
+        ->groupBy("$p_model.id")
+        ->execute()
+        ->getFirst();
     }
 }
