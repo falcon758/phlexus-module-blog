@@ -22,7 +22,10 @@ final class BlogController extends AbstractController
 
         Tag::setTitle($title);
 
-        $blogs = Blog::getBlogs((int) $this->request->get('p', null, 1));
+        $page       = (int) $this->request->get('p', null, 1);
+        $categoryID = (int) $this->request->get('cat', null, 0);
+
+        $blogs = Blog::getBlogs($page, $categoryID);
 
         $this->view->setVar('totalPages', $blogs->total_pages);
         $this->view->setVar('page', $blogs->current);

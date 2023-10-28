@@ -84,10 +84,11 @@ class Blog extends Model
      * Get blogs
      *
      * @param int $page
+     * @param int $categoryID
      *
      * @return Repository|null
      */
-    public static function getBlogs(int $page = 1): ?Repository
+    public static function getBlogs(int $page = 1, int $categoryID = 0): ?Repository
     {
         $p_model = self::class;
 
@@ -109,6 +110,10 @@ class Blog extends Model
             ->leftJoin(Media::class, "$p_model.featuredImageID = IMG.id", 'IMG')
             ->orderBy("$p_model.id DESC")
             ->groupBy("$p_model.id");
+
+        if ($categoryID > 0) {
+            $query->where('CAT.id = :categoryID:', ['categoryID' => $categoryID]);
+        }
 
         return (
             new QueryBuilder(
