@@ -21,44 +21,44 @@ class Blog extends Model
     public const ENABLED = 1;
 
     /**
-     * @var int
+     * @var int|null
      */
-    public $id;
+    public ?int $id;
 
     /**
      * @var string
      */
-    public $title;
+    public string $title;
 
     /**
      * @var string
      */
-    public $description;
+    public string $description;
 
     /**
      * @var string|null
      */
-    public $url;
-
-    /**
-     * @var int
-     */
-    public $featuredImageID;
+    public ?string $url;
 
     /**
      * @var int|null
      */
-    public $active;
+    public ?int $featuredImageID;
+
+    /**
+     * @var int|null
+     */
+    public ?int $active;
 
     /**
      * @var string|null
      */
-    public $createdAt;
+    public ?string $createdAt;
 
     /**
      * @var string|null
      */
-    public $modifiedAt;
+    public ?string $modifiedAt;
 
     /**
      * Initialize
