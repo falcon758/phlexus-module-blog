@@ -54,6 +54,7 @@ class UserBlogs extends Model
     public function initialize()
     {
         $this->setSource('user_blogs');
+        $this->skipAttributesOnUpdate(['createdAt']);
 
         $this->hasOne('userID', User::class, 'id', [
             'alias'    => 'user',
@@ -64,5 +65,13 @@ class UserBlogs extends Model
             'alias'    => 'blog',
             'reusable' => true,
         ]);
+    }
+
+    /**
+     * Before update
+     */
+    public function beforeUpdate()
+    {
+        $this->modifiedAt = date('Y-m-d H:i:s');
     }
 }

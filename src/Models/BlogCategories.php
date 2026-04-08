@@ -55,6 +55,7 @@ class BlogCategories extends Model
     public function initialize()
     {
         $this->setSource('blog_categories');
+        $this->skipAttributesOnUpdate(['createdAt']);
         
         $this->hasOne('blogID', Blog::class, 'id', [
             'alias'    => 'blog',
@@ -65,5 +66,13 @@ class BlogCategories extends Model
             'alias'    => 'category',
             'reusable' => true,
         ]);
+    }
+
+    /**
+     * Before update
+     */
+    public function beforeUpdate()
+    {
+        $this->modifiedAt = date('Y-m-d H:i:s');
     }
 }

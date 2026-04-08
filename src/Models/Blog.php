@@ -43,7 +43,7 @@ class Blog extends Model
     /**
      * @var int|null
      */
-    public ?int $featuredImageID = null
+    public ?int $featuredImageID = null;
 
     /**
      * @var int|null
@@ -68,6 +68,7 @@ class Blog extends Model
     public function initialize()
     {
         $this->setSource('blog');
+        $this->skipAttributesOnUpdate(['createdAt']);
         
         $this->hasOne('featuredImageID', Media::class, 'id', [
             'alias'    => 'featuredImage',
@@ -78,6 +79,14 @@ class Blog extends Model
             'alias'    => 'categories',
             'reusable' => true,
         ]);
+    }
+
+    /**
+     * Before update
+     */
+    public function beforeUpdate()
+    {
+        $this->modifiedAt = date('Y-m-d H:i:s');
     }
 
     /**
